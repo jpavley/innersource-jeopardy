@@ -67,7 +67,7 @@ class TextBoxState {
 // Create 15 TextBoxStates, one for each box
 const textBoxStates = [];
 for (let i = 0; i < 15; i++) {
-    textBoxStates.push(new TextBoxState(true, true, answerValues[i%5], answers[i], questions[i]));
+    textBoxStates.push(new TextBoxState(false, false, answerValues[i%5], answers[i], questions[i]));
 }
 
 // Drawing
@@ -94,19 +94,33 @@ function drawText(ctx, x, y, text, color, font) {
 }
 
 function drawTextBox(ctx, x, y, width, height, radius, text) {
-    const boxTextStyle = "20px Trebuchet MS";
-    ctx.font = boxTextStyle;
 
+    // draw box
     const boxCenterX = x + width / 2;
     const boxCenterY = y + height / 2;
-
-    const textWidth = ctx.measureText(text).width;
-    const textCenterX = boxCenterX - textWidth / 2;
-    const textHeight = 20;
-    const textCenterY = boxCenterY + textHeight / 2;
-
     drawRoundedRect(ctx, x, y, width, height, radius, "gray");
-    drawText(ctx, textCenterX, textCenterY, text, "black", boxTextStyle);
+
+    // draw text
+    const boxTextStyle = "20px Trebuchet MS";
+    ctx.font = boxTextStyle;
+    const textWidth = ctx.measureText(text).width;
+
+    if (textWidth > width) {
+        const lines = splitStringIntoLines(text, width - 10);
+        // draw each line
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            const textHeight = 20;
+            const textCenterY = boxCenterY - (lines.length - 1) * textHeight / 2 + i * textHeight;
+            drawText(ctx, x + 10, textCenterY, line, "black", boxTextStyle);
+        }
+    } else {
+        // draw single line
+        const textCenterX = boxCenterX - textWidth / 2;
+        const textHeight = 20;
+        const textCenterY = boxCenterY + textHeight / 2;
+        drawText(ctx, textCenterX, textCenterY, text, "black", boxTextStyle);    
+    }
 }
 
 // text manipulation
@@ -120,8 +134,8 @@ function splitStringIntoLines(str, maxLineWidth) {
     let line = "";
     for (let i = 0; i < words.length; i++) {
         const word = words[i];
-        // if lineWidth < maxLineWidth, add word to line
-        if (line.length + word.length < 5) {
+        const lineWidth = ctx.measureText(line + " " + word).width;
+        if (lineWidth <= maxLineWidth) {
             line += word + " ";
         } else {
             lines.push(line);
@@ -130,7 +144,11 @@ function splitStringIntoLines(str, maxLineWidth) {
     }
     lines.push(line);
     return lines;
-}    
+}
+
+// test splitting a string into lines
+//const lines = splitStringIntoLines("This is a test of the emergency broadcast system. This is only a test.", 240);
+//console.log(lines);
     
 
 // animation
@@ -141,8 +159,8 @@ function update(deltaTime) {
 
 function render() {
 
-    const boxWidth = 240;
-    const boxHeight = 120;
+    const boxWidth = 300;
+    const boxHeight = 130;
     const boxX = 50;
     const boxY = 50;
     const boxSpacing = 20;
