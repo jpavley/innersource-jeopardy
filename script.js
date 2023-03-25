@@ -3,8 +3,8 @@
 // Canvas and context
 
 const canvas = document.getElementById("canvas");
-canvas.width = 1000;
-canvas.height = 800;
+canvas.width = 1920;
+canvas.height = 1080;
 
 const ctx = canvas.getContext("2d");
 
@@ -71,9 +71,11 @@ const questions = [
 ];
 
 class TextBoxState {
-    constructor(open, showingAnswer, answerValue, answer, question) {
+    constructor(open, showingAnswer, answered, answerValue, answer, question) {
         this.open = open;
         this.showingAnswer = showingAnswer;
+        this.aswered = answered;
+
         this.answerValue = answerValue;
         this.answer = answer;
         this.question = question;
@@ -83,7 +85,7 @@ class TextBoxState {
 // Create 15 TextBoxStates, one for each box
 const textBoxStates = [];
 for (let i = 0; i < 15; i++) {
-    textBoxStates.push(new TextBoxState(false, false, answerValues[i%5], answers[i], questions[i]));
+    textBoxStates.push(new TextBoxState(false, false, false, answerValues[i%5], answers[i], questions[i]));
 }
 
 // Drawing
@@ -106,6 +108,7 @@ function drawRoundedRect(ctx, x, y, width, height, radius, color) {
 function drawText(ctx, x, y, text, color, font) {
     ctx.fillStyle = color;
     ctx.font = font;
+    ctx.textAlign = "left";
     ctx.fillText(text, x, y);
 }
 
@@ -185,8 +188,8 @@ function render() {
 
     const boxWidth = 300;
     const boxHeight = 130;
-    const boxX = 50;
-    const boxY = 50;
+    const boxX = 40;
+    const boxY = 100;
     const boxSpacing = 20;
 
     // draw a label for each category above the boxes
