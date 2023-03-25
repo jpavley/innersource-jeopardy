@@ -131,12 +131,14 @@ function drawTextBox(ctx, x, y, width, height, radius, text) {
     const textWidth = ctx.measureText(text).width;
 
     if (textWidth > width) {
+        ctx.font = multiLineTextStyle;
         const lines = splitStringIntoLines(text, width - 10);
         // draw each line
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
-            const textHeight = singleLineFontSize;
-            const textCenterY = boxCenterY - (lines.length - 1) * textHeight / 2 + i * textHeight;
+            const textHeight = multiLineFontSize;
+            const leading = 5
+            const textCenterY = (boxCenterY - ((lines.length - 1) * (textHeight / 2)) + (i * (textHeight + leading)));
             drawText(ctx, x + 10, textCenterY, line, labelColor, multiLineTextStyle);
         }
     } else {
@@ -144,7 +146,7 @@ function drawTextBox(ctx, x, y, width, height, radius, text) {
         ctx.font = singleLineTextStyle;
         const textWidth = ctx.measureText(text).width;    
         const textCenterX = boxCenterX - textWidth / 2;
-        const textHeight = multiLineFontSize;
+        const textHeight = singleLineFontSize;
         const textCenterY = boxCenterY + textHeight / 2;
         drawTextCentered(ctx, boxCenterX, textCenterY, text, labelColor, singleLineTextStyle);  
     }
