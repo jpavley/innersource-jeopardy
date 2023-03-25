@@ -15,6 +15,15 @@ const labelColor = "Snow";
 const boxColor = "RoyalBlue";
 const headerColor = "Gold";
 
+const textFontName = "Trebuchet MS";
+const singleLineFontSize = 50;
+const multiLineFontSize = 20;
+const headerFontSize = 30;
+
+const headerTextStyle = `${headerFontSize}px ${textFontName}`;
+const singleLineTextStyle = `${singleLineFontSize}px ${textFontName}`;
+const multiLineTextStyle = `${multiLineFontSize}px ${textFontName}`;
+
 // Game Data
 
 const categories = [ "Best Practices We Do", "Benefits We Love", "Risk That Annoy Us" ];
@@ -100,6 +109,13 @@ function drawText(ctx, x, y, text, color, font) {
     ctx.fillText(text, x, y);
 }
 
+function drawTextCentered(ctx, x, y, text, color, font) {
+    ctx.fillStyle = color;
+    ctx.font = font;
+    ctx.textAlign = "center";
+    ctx.fillText(text, x, y);
+}
+
 function drawTextBox(ctx, x, y, width, height, radius, text) {
 
     // draw box
@@ -108,8 +124,7 @@ function drawTextBox(ctx, x, y, width, height, radius, text) {
     drawRoundedRect(ctx, x, y, width, height, radius, boxColor);
 
     // draw text
-    const boxTextStyle = "20px Trebuchet MS";
-    ctx.font = boxTextStyle;
+    ctx.font = multiLineTextStyle;
     const textWidth = ctx.measureText(text).width;
 
     if (textWidth > width) {
@@ -117,23 +132,25 @@ function drawTextBox(ctx, x, y, width, height, radius, text) {
         // draw each line
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
-            const textHeight = 20;
+            const textHeight = singleLineFontSize;
             const textCenterY = boxCenterY - (lines.length - 1) * textHeight / 2 + i * textHeight;
-            drawText(ctx, x + 10, textCenterY, line, labelColor, boxTextStyle);
+            drawText(ctx, x + 10, textCenterY, line, labelColor, multiLineTextStyle);
         }
     } else {
         // draw single line
+        ctx.font = singleLineTextStyle;
+        const textWidth = ctx.measureText(text).width;    
         const textCenterX = boxCenterX - textWidth / 2;
-        const textHeight = 20;
+        const textHeight = multiLineFontSize;
         const textCenterY = boxCenterY + textHeight / 2;
-        drawText(ctx, textCenterX, textCenterY, text, labelColor, boxTextStyle);    
+        drawTextCentered(ctx, boxCenterX, textCenterY, text, labelColor, singleLineTextStyle);  
     }
 }
 
 // text manipulation
 
 function splitStringIntoLines(str, maxLineWidth) {
-    const boxTextStyle = "20px Trebuchet MS";
+    const boxTextStyle = multiLineTextStyle;
     ctx.font = boxTextStyle;
 
     const words = str.split(" ");
@@ -174,7 +191,14 @@ function render() {
 
     // draw a label for each category above the boxes
     for (let i = 0; i < categories.length; i++) {
-        drawText(ctx, boxX + i * (boxWidth + boxSpacing), boxY - 20, categories[i], headerColor, "20px Trebuchet MS");
+        drawTextCentered(
+            ctx,
+            boxX + i * (boxWidth + boxSpacing) + boxWidth / 2,
+            boxY - boxSpacing,
+            categories[i],
+            headerColor,
+            headerTextStyle
+        );
     }
 
     // draw a box for each category and answer value in columns and rows
