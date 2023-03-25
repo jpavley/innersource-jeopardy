@@ -8,6 +8,13 @@ canvas.height = 800;
 
 const ctx = canvas.getContext("2d");
 
+// Colors and Styles
+
+const backgroundColor = "DarkBlue";
+const labelColor = "Snow";
+const boxColor = "RoyalBlue";
+const headerColor = "Gold";
+
 // Game Data
 
 const categories = [ "Best Practices We Do", "Benefits We Love", "Risk That Annoy Us" ];
@@ -98,7 +105,7 @@ function drawTextBox(ctx, x, y, width, height, radius, text) {
     // draw box
     const boxCenterX = x + width / 2;
     const boxCenterY = y + height / 2;
-    drawRoundedRect(ctx, x, y, width, height, radius, "gray");
+    drawRoundedRect(ctx, x, y, width, height, radius, boxColor);
 
     // draw text
     const boxTextStyle = "20px Trebuchet MS";
@@ -112,14 +119,14 @@ function drawTextBox(ctx, x, y, width, height, radius, text) {
             const line = lines[i];
             const textHeight = 20;
             const textCenterY = boxCenterY - (lines.length - 1) * textHeight / 2 + i * textHeight;
-            drawText(ctx, x + 10, textCenterY, line, "black", boxTextStyle);
+            drawText(ctx, x + 10, textCenterY, line, labelColor, boxTextStyle);
         }
     } else {
         // draw single line
         const textCenterX = boxCenterX - textWidth / 2;
         const textHeight = 20;
         const textCenterY = boxCenterY + textHeight / 2;
-        drawText(ctx, textCenterX, textCenterY, text, "black", boxTextStyle);    
+        drawText(ctx, textCenterX, textCenterY, text, labelColor, boxTextStyle);    
     }
 }
 
@@ -167,7 +174,7 @@ function render() {
 
     // draw a label for each category above the boxes
     for (let i = 0; i < categories.length; i++) {
-        drawText(ctx, boxX + i * (boxWidth + boxSpacing), boxY - 20, categories[i], "white", "20px Trebuchet MS");
+        drawText(ctx, boxX + i * (boxWidth + boxSpacing), boxY - 20, categories[i], headerColor, "20px Trebuchet MS");
     }
 
     // draw a box for each category and answer value in columns and rows
