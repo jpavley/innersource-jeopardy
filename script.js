@@ -178,7 +178,32 @@ function splitStringIntoLines(str, maxLineWidth) {
 // test splitting a string into lines
 //const lines = splitStringIntoLines("This is a test of the emergency broadcast system. This is only a test.", 240);
 //console.log(lines);
-    
+
+// Interactivity
+
+
+function clickedInsideBox(x, y, boxX, boxY, boxWidth, boxHeight) {
+    return x >= boxX && x <= boxX + boxWidth && y >= boxY && y <= boxY + boxHeight;
+}
+
+function getBoxClicked(x, y) {
+    for (let i = 0; i < textBoxStates.length; i++) {
+        const boxClicked = clickedInsideBox(x, y, boxX + i * (boxWidth + boxSpacing), boxY, boxWidth, boxHeight);
+        if (boxClicked) {
+            return i;
+        }
+    }
+    return null;
+}
+
+canvas.addEventListener('click', function(event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    //console.log(`Mouse clicked at (${x}, ${y})`);
+    const boxClicked = getBoxClicked(x, y);
+    console.log(`Box clicked: ${boxClicked}`);
+  });  
 
 // animation
 
