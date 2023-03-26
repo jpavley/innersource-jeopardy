@@ -8,6 +8,14 @@ canvas.height = 1080;
 
 const ctx = canvas.getContext("2d");
 
+// Box Metrics
+
+const boxWidth = 300;
+const boxHeight = 130;
+const boxX = 40;
+const boxY = 100;
+const boxSpacing = 20;
+
 // Colors and Styles
 
 const backgroundColor = "DarkBlue";
@@ -79,6 +87,11 @@ class TextBoxState {
         this.answerValue = answerValue;
         this.answer = answer;
         this.question = question;
+
+        this.x = 0;
+        this.y = 0;
+        this.width = 0;
+        this.height = 0;
     }
 }
 
@@ -181,7 +194,6 @@ function splitStringIntoLines(str, maxLineWidth) {
 
 // Interactivity
 
-
 function clickedInsideBox(x, y, boxX, boxY, boxWidth, boxHeight) {
     return x >= boxX && x <= boxX + boxWidth && y >= boxY && y <= boxY + boxHeight;
 }
@@ -212,13 +224,6 @@ function update(deltaTime) {
 }
 
 function render() {
-
-    const boxWidth = 300;
-    const boxHeight = 130;
-    const boxX = 40;
-    const boxY = 100;
-    const boxSpacing = 20;
-
     // draw a label for each category above the boxes
     for (let i = 0; i < categories.length; i++) {
         drawTextCentered(
