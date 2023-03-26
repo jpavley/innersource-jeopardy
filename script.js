@@ -21,6 +21,7 @@ const boxSpacing = 20;
 const backgroundColor = "DarkBlue";
 const labelColor = "Snow";
 const boxColor = "RoyalBlue";
+const boxQuestionColor = "DodgerBlue";
 const headerColor = "Gold";
 
 const textFontName = "Trebuchet MS";
@@ -78,11 +79,15 @@ const questions = [
     "What happens to innersource without executive leadership commitment and without middle management buy-in?"
 ];
 
+const BoxDisplayState = {
+    SHOWING_VALUE: 0,
+    SHOWING_ANSWER: 1,
+    SHOWING_QUESTION: 2
+};
+
 class TextBoxState {
-    constructor(open, showingAnswer, answered, answerValue, answer, question) {
-        this.open = open;
-        this.showingAnswer = showingAnswer;
-        this.aswered = answered;
+    constructor(boxDisplayState, answerValue, answer, question) {
+        this.boxDisplayState = boxDisplayState;
 
         this.answerValue = answerValue;
         this.answer = answer;
@@ -93,12 +98,26 @@ class TextBoxState {
         this.width = 0;
         this.height = 0;
     }
+
+    onClick() {
+        switch (this.boxDisplayState) {
+            case BoxDisplayState.SHOWING_VALUE:
+                this.boxDisplayState = BoxDisplayState.SHOWING_ANSWER;
+                break;
+            case BoxDisplayState.SHOWING_ANSWER:
+                this.boxDisplayState = BoxDisplayState.SHOWING_QUESTION;
+                break;
+            case BoxDisplayState.SHOWING_QUESTION:
+                this.boxDisplayState = BoxDisplayState.SHOWING_VALUE;
+                break;
+        }
+    }
 }
 
 // Create 15 TextBoxStates, one for each box
 const textBoxStates = [];
 for (let i = 0; i < 15; i++) {
-    textBoxStates.push(new TextBoxState(false, false, false, answerValues[i%5], answers[i], questions[i]));
+    textBoxStates.push(new TextBoxState(BoxDisplayState.SHOWING_VALUE, answerValues[i%5], answers[i], questions[i]));
 }
 
 // Drawing
@@ -157,7 +176,6 @@ function drawTextBox(ctx, x, y, width, height, radius, text) {
     } else {
         // draw single line
         ctx.font = singleLineTextStyle;
-        const textWidth = ctx.measureText(text).width;    
         const textHeight = singleLineFontSize;
         const textCenterY = boxCenterY + textHeight / 2;
         drawTextCentered(ctx, boxCenterX, textCenterY, text, labelColor, singleLineTextStyle);  
@@ -218,6 +236,7 @@ canvas.addEventListener('click', function(event) {
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
     const boxClicked = getBoxClicked(mouseX, mouseY);
+    textBoxStates[boxClicked].onClick();
     console.log(`Box clicked: ${boxClicked}`);
   });  
 
@@ -247,16 +266,18 @@ function render() {
 
             var boxLabel = "";
 
-            if (textBoxState.open) {
-                if (textBoxState.showingAnswer) {
+            switch (textBoxState.boxDisplayState) {
+                case BoxDisplayState.SHOWING_VALUE:
+                    boxLabel = textBoxState.answerValue;
+                    break;
+                case BoxDisplayState.SHOWING_ANSWER:
                     boxLabel = textBoxState.answer;
-                } else {
+                    break;
+                case BoxDisplayState.SHOWING_QUESTION:
                     boxLabel = textBoxState.question;
-                }
-            } else {
-                boxLabel = textBoxState.answerValue;
+                    break;
             }
-
+    
             let boxX = startX + i * (boxWidth + boxSpacing);
             let boxY = startY + j * (boxHeight + boxSpacing);
 
