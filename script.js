@@ -12,8 +12,8 @@ const ctx = canvas.getContext("2d");
 
 const boxWidth = 300;
 const boxHeight = 130;
-const boxX = 40;
-const boxY = 100;
+const startX = 40;
+const startY = 100;
 const boxSpacing = 20;
 
 // Colors and Styles
@@ -200,7 +200,7 @@ function clickedInsideBox(x, y, boxX, boxY, boxWidth, boxHeight) {
 
 function getBoxClicked(x, y) {
     for (let i = 0; i < textBoxStates.length; i++) {
-        const boxClicked = clickedInsideBox(x, y, boxX + i * (boxWidth + boxSpacing), boxY, boxWidth, boxHeight);
+        const boxClicked = clickedInsideBox(x, y, startX + i * (boxWidth + boxSpacing), startY, boxWidth, boxHeight);
         if (boxClicked) {
             return i;
         }
@@ -228,8 +228,8 @@ function render() {
     for (let i = 0; i < categories.length; i++) {
         drawTextCentered(
             ctx,
-            boxX + i * (boxWidth + boxSpacing) + boxWidth / 2,
-            boxY - boxSpacing,
+            startX + i * (boxWidth + boxSpacing) + boxWidth / 2,
+            startY - boxSpacing,
             categories[i],
             headerColor,
             headerTextStyle
@@ -255,8 +255,8 @@ function render() {
 
             drawTextBox(
                 ctx, 
-                boxX + i * (boxWidth + boxSpacing), 
-                boxY + j * (boxHeight + boxSpacing), 
+                startX + i * (boxWidth + boxSpacing), 
+                startY + j * (boxHeight + boxSpacing), 
                 boxWidth, 
                 boxHeight, 
                 10,  
