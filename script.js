@@ -18,10 +18,13 @@ const boxSpacing = 20;
 
 // Colors and Styles
 
-const backgroundColor = "DarkBlue";
-const labelColor = "Snow";
-const boxColor = "RoyalBlue";
+const backgroundColor = "MidnightBlue";
+const labelColor = "snow";
+
+const boxValueColor = "Blue";
+const boxAnswerColor = "RoyalBlue";
 const boxQuestionColor = "DodgerBlue";
+
 const headerColor = "Gold";
 
 const textFontName = "Trebuchet MS";
@@ -124,6 +127,8 @@ for (let i = 0; i < 15; i++) {
 
 function drawRoundedRect(ctx, x, y, width, height, radius, color) {
     ctx.fillStyle = color;
+    ctx.strokeStyle = "Gold";
+    ctx.lineWidth = 5;
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
     ctx.lineTo(x + width - radius, y);
@@ -135,6 +140,7 @@ function drawRoundedRect(ctx, x, y, width, height, radius, color) {
     ctx.lineTo(x, y + radius);
     ctx.quadraticCurveTo(x, y, x + radius, y);
     ctx.fill();
+    ctx.stroke();
 }
 
 function drawText(ctx, x, y, text, color, font) {
@@ -151,12 +157,12 @@ function drawTextCentered(ctx, x, y, text, color, font) {
     ctx.fillText(text, x, y);
 }
 
-function drawTextBox(ctx, x, y, width, height, radius, text) {
+function drawTextBox(ctx, x, y, width, height, radius, text, color) {
 
     // draw box
     const boxCenterX = x + width / 2;
     const boxCenterY = y + height / 2;
-    drawRoundedRect(ctx, x, y, width, height, radius, boxColor);
+    drawRoundedRect(ctx, x, y, width, height, radius, color);
 
     // draw text
     ctx.font = multiLineTextStyle;
@@ -265,16 +271,20 @@ function render() {
             const textBoxState = textBoxStates[i * answerValues.length + j];
 
             var boxLabel = "";
+            var boxColor = "";
 
             switch (textBoxState.boxDisplayState) {
                 case BoxDisplayState.SHOWING_VALUE:
                     boxLabel = textBoxState.answerValue;
+                    boxColor = boxValueColor;
                     break;
                 case BoxDisplayState.SHOWING_ANSWER:
                     boxLabel = textBoxState.answer;
+                    boxColor = boxAnswerColor;
                     break;
                 case BoxDisplayState.SHOWING_QUESTION:
                     boxLabel = textBoxState.question;
+                    boxColor = boxQuestionColor;
                     break;
             }
     
@@ -288,7 +298,8 @@ function render() {
                 boxWidth, 
                 boxHeight, 
                 10,  
-                boxLabel
+                boxLabel,
+                boxColor
             );
 
             textBoxState.x = boxX;
