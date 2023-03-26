@@ -109,10 +109,10 @@ class PanelState {
         this.answer = answer;
         this.question = question;
 
-        this.x = 0;
-        this.y = 0;
-        this.width = 0;
-        this.height = 0;
+        this.x = canvas.width / 2 - panelWidth / 2;
+        this.y = canvas.height / 2 - panelHeight / 2;
+        this.width = panelWidth;
+        this.height = panelHeight;
     }
 
     onClick() {
@@ -167,6 +167,9 @@ const textBoxStates = [];
 for (let i = 0; i < 15; i++) {
     textBoxStates.push(new TextBoxState(BoxDisplayState.SHOWING_VALUE, answerValues[i%5], answers[i], questions[i]));
 }
+
+// create one PanelState
+const panelState = new PanelState(PanelDisplayState.SHOWING_NOTHING, "", "");
 
 // Drawing
 
@@ -379,9 +382,33 @@ function drawTextBoxes(ctx) {
     }    
 }
 
+function drawPanel(ctx) {
+    // draw panel if there is something to show
+
+
+
+    var label = "";
+    var color = "RoyalBlue";
+    var drawBorder = true;
+
+
+    drawTextBox(
+        ctx, 
+        panelX, 
+        panelY, 
+        panelWidth, 
+        panelHeight, 
+        10,  
+        label,
+        color,
+        drawBorder
+    );
+}
+
 function render() {
     drawCategories(ctx);
     drawTextBoxes(ctx);
+    drawPanel(ctx);
 }
 
 function animate(timestamp) {
