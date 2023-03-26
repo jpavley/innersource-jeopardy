@@ -8,6 +8,16 @@ canvas.height = 1080;
 
 const ctx = canvas.getContext("2d");
 
+// Interaction
+
+const ClickOwner = {
+    TEXT_BOX: 0,
+    PANEL: 1
+}
+
+let currentClickOwner = ClickOwner.TEXT_BOX;
+let currentBoxClicked = null;
+
 // Box Metrics
 
 const boxWidth = 300;
@@ -119,9 +129,11 @@ class PanelState {
         switch (this.panelDisplayState) {
             case PanelDisplayState.SHOWING_ANSWER:
                 this.panelDisplayState = PanelDisplayState.SHOWING_QUESTION;
+                currentClickOwner = ClickOwner.PANEL;
                 break;
             case PanelDisplayState.SHOWING_QUESTION:
                 this.panelDisplayState = PanelDisplayState.SHOWING_NOTHING;
+                currentClickOwner = ClickOwner.TEXT_BOX;
                 break;
             case PanelDisplayState.SHOWING_NOTHING:
                 this.panelDisplayState = PanelDisplayState.SHOWING_NOTHING;
@@ -147,17 +159,18 @@ class TextBoxState {
     onClick() {
         switch (this.boxDisplayState) {
             case BoxDisplayState.SHOWING_VALUE:
-                this.boxDisplayState = BoxDisplayState.SHOWING_ANSWER;
+                this.boxDisplayState = BoxDisplayState.SHOWING_NOTHING;
+                currentClickOwner = ClickOwner.PANEL;
                 panelState.panelDisplayState = PanelDisplayState.SHOWING_ANSWER;
                 break;
             case BoxDisplayState.SHOWING_ANSWER:
-                this.boxDisplayState = BoxDisplayState.SHOWING_QUESTION;
+                //this.boxDisplayState = BoxDisplayState.SHOWING_QUESTION;
                 break;
             case BoxDisplayState.SHOWING_QUESTION:
-                this.boxDisplayState = BoxDisplayState.SHOWING_NOTHING;
+                //this.boxDisplayState = BoxDisplayState.SHOWING_NOTHING;
                 break;
             case BoxDisplayState.SHOWING_NOTHING:
-                this.boxDisplayState = BoxDisplayState.SHOWING_NOTHING;
+                //this.boxDisplayState = BoxDisplayState.SHOWING_NOTHING;
                 break;
            }
     }
@@ -272,8 +285,6 @@ function splitStringIntoLines(str, maxLineWidth) {
 
 // Interactivity
 
-let currentBoxClicked = null;
-
 function clickedInsideBox(x, y, boxX, boxY, boxWidth, boxHeight) {
     const gotClick =  x >= boxX && x <= boxX + boxWidth && y >= boxY && y <= boxY + boxHeight;
     return gotClick;
@@ -299,15 +310,21 @@ canvas.addEventListener('click', function(event) {
     const rect = canvas.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
-    const boxClicked = getBoxClicked(mouseX, mouseY);
 
-    if (boxClicked === null) {
-        return;
-    }
-
-    currentBoxClicked = boxClicked;
-    textBoxStates[boxClicked].onClick();
-    console.log(`Box clicked: ${boxClicked}`);
+    switch (currentClickOwner) {
+        case ClickOwner.TEXT_BOX:
+            const boxClicked = getBoxClicked(mouseX, mouseY);
+            if (boxClicked === null) {
+                return;
+            }
+            currentBoxClicked = boxClicked;
+            textBoxStates[boxClicked].onClick();
+            console.log(`Box clicked: ${boxClicked}`);
+            break;
+        case ClickOwner.PANEL:
+            panelState.onClick(mouseX, mouseY);
+            break;
+        }
   });  
 
 // animation
