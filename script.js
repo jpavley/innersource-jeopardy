@@ -230,21 +230,21 @@ function drawTextBox(ctx, x, y, width, height, radius, text, color, drawBorder) 
 
     if (textWidth > width) {
         ctx.font = multiLineTextStyle;
-        const lines = splitStringIntoLines(text, width - 10);
+        const lines = splitStringIntoLines(text, width - 40);
         // draw each line
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
             const textHeight = multiLineFontSize;
             const leading = 5
             const textCenterY = (boxCenterY - ((lines.length - 1) * (textHeight / 2)) + (i * (textHeight + leading)));
-            drawText(ctx, x + 10, textCenterY, line, labelColor, multiLineTextStyle);
+            drawText(ctx, x + 40, textCenterY, line, labelColor, multiLineTextStyle);
         }
     } else {
         // draw single line
         ctx.font = singleLineTextStyle;
         const textHeight = singleLineFontSize;
         const textCenterY = boxCenterY + textHeight / 2;
-        drawTextCentered(ctx, boxCenterX, textCenterY, text, labelColor, singleLineTextStyle);  
+        drawTextCentered(ctx, boxCenterX , textCenterY, text, labelColor, singleLineTextStyle);  
     }
 }
 
@@ -397,16 +397,16 @@ function drawPanel(ctx) {
             return;
         case PanelDisplayState.SHOWING_ANSWER:
             label = textBoxStates[currentBoxClicked].answer;
-            color = "rgba(0, 0, 255, 0.80)";
+            color = "rgba(0, 0, 255, 0.50)";
             break;
         case PanelDisplayState.SHOWING_QUESTION:
             label = textBoxStates[currentBoxClicked].question;
-            color = boxQuestionColor;
+            color = "rgba(0, 0, 255, 0.50)";
             break;
     }
 
-    ctx.shadowBlur = 10;
-    //ctx.shadowColor = "black";
+    ctx.shadowBlur = 100;
+    ctx.shadowColor = "black";
 
     drawTextBox(
         ctx, 
