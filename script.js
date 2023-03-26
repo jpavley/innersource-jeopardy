@@ -198,9 +198,15 @@ function clickedInsideBox(x, y, boxX, boxY, boxWidth, boxHeight) {
     return x >= boxX && x <= boxX + boxWidth && y >= boxY && y <= boxY + boxHeight;
 }
 
-function getBoxClicked(x, y) {
+function getBoxClicked(mouseX, mouseY) {
     for (let i = 0; i < textBoxStates.length; i++) {
-        const boxClicked = clickedInsideBox(x, y, startX + i * (boxWidth + boxSpacing), startY, boxWidth, boxHeight);
+        const boxClicked = clickedInsideBox(
+            mouseX, 
+            mouseY,
+            textBoxStates[i].x, 
+            textBoxStates[i].y, 
+            textBoxStates[i].width, 
+            textBoxStates[i].height);
         if (boxClicked) {
             return i;
         }
@@ -210,10 +216,9 @@ function getBoxClicked(x, y) {
 
 canvas.addEventListener('click', function(event) {
     const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    //console.log(`Mouse clicked at (${x}, ${y})`);
-    const boxClicked = getBoxClicked(x, y);
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+    const boxClicked = getBoxClicked(mouseX, mouseY);
     console.log(`Box clicked: ${boxClicked}`);
   });  
 
@@ -253,15 +258,23 @@ function render() {
                 boxLabel = textBoxState.answerValue;
             }
 
+            let boxX = startX + i * (boxWidth + boxSpacing);
+            let boxY = startY + j * (boxHeight + boxSpacing);
+
             drawTextBox(
                 ctx, 
-                startX + i * (boxWidth + boxSpacing), 
-                startY + j * (boxHeight + boxSpacing), 
+                boxX, 
+                boxY, 
                 boxWidth, 
                 boxHeight, 
                 10,  
                 boxLabel
             );
+
+            textBoxState.x = boxX;
+            textBoxState.y = boxY;
+            textBoxState.width = boxWidth;
+            textBoxState.height = boxHeight;
         }
     }
 }
