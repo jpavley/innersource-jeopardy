@@ -158,7 +158,6 @@ function drawTextBox(ctx, x, y, width, height, radius, text) {
         // draw single line
         ctx.font = singleLineTextStyle;
         const textWidth = ctx.measureText(text).width;    
-        const textCenterX = boxCenterX - textWidth / 2;
         const textHeight = singleLineFontSize;
         const textCenterY = boxCenterY + textHeight / 2;
         drawTextCentered(ctx, boxCenterX, textCenterY, text, labelColor, singleLineTextStyle);  
