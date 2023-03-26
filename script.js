@@ -228,7 +228,8 @@ function splitStringIntoLines(str, maxLineWidth) {
 // Interactivity
 
 function clickedInsideBox(x, y, boxX, boxY, boxWidth, boxHeight) {
-    return x >= boxX && x <= boxX + boxWidth && y >= boxY && y <= boxY + boxHeight;
+    const gotClick =  x >= boxX && x <= boxX + boxWidth && y >= boxY && y <= boxY + boxHeight;
+    return gotClick;
 }
 
 function getBoxClicked(mouseX, mouseY) {
@@ -252,6 +253,11 @@ canvas.addEventListener('click', function(event) {
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
     const boxClicked = getBoxClicked(mouseX, mouseY);
+
+    if (boxClicked === null) {
+        return;
+    }
+    
     textBoxStates[boxClicked].onClick();
     console.log(`Box clicked: ${boxClicked}`);
   });  
