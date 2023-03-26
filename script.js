@@ -85,7 +85,8 @@ const questions = [
 const BoxDisplayState = {
     SHOWING_VALUE: 0,
     SHOWING_ANSWER: 1,
-    SHOWING_QUESTION: 2
+    SHOWING_QUESTION: 2,
+    SHOWING_NOTHING: 3
 };
 
 class TextBoxState {
@@ -111,9 +112,12 @@ class TextBoxState {
                 this.boxDisplayState = BoxDisplayState.SHOWING_QUESTION;
                 break;
             case BoxDisplayState.SHOWING_QUESTION:
-                this.boxDisplayState = BoxDisplayState.SHOWING_VALUE;
+                this.boxDisplayState = BoxDisplayState.SHOWING_NOTHING;
                 break;
-        }
+            case BoxDisplayState.SHOWING_NOTHING:
+                this.boxDisplayState = BoxDisplayState.SHOWING_NOTHING;
+                break;
+           }
     }
 }
 
@@ -125,10 +129,7 @@ for (let i = 0; i < 15; i++) {
 
 // Drawing
 
-function drawRoundedRect(ctx, x, y, width, height, radius, color) {
-    ctx.fillStyle = color;
-    ctx.strokeStyle = "Gold";
-    ctx.lineWidth = 5;
+function drawRoundedRect(ctx, x, y, width, height, radius, color, drawBorder) {
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
     ctx.lineTo(x + width - radius, y);
@@ -139,8 +140,17 @@ function drawRoundedRect(ctx, x, y, width, height, radius, color) {
     ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
     ctx.lineTo(x, y + radius);
     ctx.quadraticCurveTo(x, y, x + radius, y);
+
+    // fill
+    ctx.fillStyle = color;
     ctx.fill();
-    ctx.stroke();
+
+    // stroke
+    if (drawBorder) {
+        ctx.strokeStyle = "Gold";
+        ctx.lineWidth = 5;
+        ctx.stroke();
+    }
 }
 
 function drawText(ctx, x, y, text, color, font) {
@@ -157,12 +167,12 @@ function drawTextCentered(ctx, x, y, text, color, font) {
     ctx.fillText(text, x, y);
 }
 
-function drawTextBox(ctx, x, y, width, height, radius, text, color) {
+function drawTextBox(ctx, x, y, width, height, radius, text, color, drawBorder) {
 
     // draw box
     const boxCenterX = x + width / 2;
     const boxCenterY = y + height / 2;
-    drawRoundedRect(ctx, x, y, width, height, radius, color);
+    drawRoundedRect(ctx, x, y, width, height, radius, color, drawBorder);
 
     // draw text
     ctx.font = multiLineTextStyle;
@@ -272,21 +282,30 @@ function render() {
 
             var boxLabel = "";
             var boxColor = "";
+            var drawBorder = false;
 
             switch (textBoxState.boxDisplayState) {
                 case BoxDisplayState.SHOWING_VALUE:
                     boxLabel = textBoxState.answerValue;
                     boxColor = boxValueColor;
+                    drawBorder = false;
                     break;
                 case BoxDisplayState.SHOWING_ANSWER:
                     boxLabel = textBoxState.answer;
                     boxColor = boxAnswerColor;
+                    drawBorder = true;
                     break;
                 case BoxDisplayState.SHOWING_QUESTION:
                     boxLabel = textBoxState.question;
                     boxColor = boxQuestionColor;
+                    drawBorder = true;
                     break;
-            }
+                case BoxDisplayState.SHOWING_NOTHING:
+                    boxLabel = "";
+                    boxColor = backgroundColor;
+                    drawBorder = false;
+                    break;
+                }
     
             let boxX = startX + i * (boxWidth + boxSpacing);
             let boxY = startY + j * (boxHeight + boxSpacing);
@@ -299,7 +318,8 @@ function render() {
                 boxHeight, 
                 10,  
                 boxLabel,
-                boxColor
+                boxColor,
+                drawBorder
             );
 
             textBoxState.x = boxX;
