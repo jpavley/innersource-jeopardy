@@ -46,7 +46,7 @@ const headerColor = "Gold";
 
 const textFontName = "Trebuchet MS";
 const singleLineFontSize = 50;
-const multiLineFontSize = 20;
+const multiLineFontSize = 70;
 const headerFontSize = 30;
 
 const headerTextStyle = `${headerFontSize}px ${textFontName}`;
@@ -101,8 +101,6 @@ const questions = [
 
 const BoxDisplayState = {
     SHOWING_VALUE: 0,
-    SHOWING_ANSWER: 1,
-    SHOWING_QUESTION: 2,
     SHOWING_NOTHING: 3
 };
 
@@ -163,14 +161,8 @@ class TextBoxState {
                 currentClickOwner = ClickOwner.PANEL;
                 panelState.panelDisplayState = PanelDisplayState.SHOWING_ANSWER;
                 break;
-            case BoxDisplayState.SHOWING_ANSWER:
-                //this.boxDisplayState = BoxDisplayState.SHOWING_QUESTION;
-                break;
-            case BoxDisplayState.SHOWING_QUESTION:
-                //this.boxDisplayState = BoxDisplayState.SHOWING_NOTHING;
-                break;
             case BoxDisplayState.SHOWING_NOTHING:
-                //this.boxDisplayState = BoxDisplayState.SHOWING_NOTHING;
+                this.boxDisplayState = BoxDisplayState.SHOWING_NOTHING;
                 break;
            }
     }
@@ -362,16 +354,6 @@ function drawTextBoxes(ctx) {
                     boxLabel = textBoxState.answerValue;
                     boxColor = boxValueColor;
                     drawBorder = false;
-                    break;
-                case BoxDisplayState.SHOWING_ANSWER:
-                    boxLabel = textBoxState.answer;
-                    boxColor = boxAnswerColor;
-                    drawBorder = true;
-                    break;
-                case BoxDisplayState.SHOWING_QUESTION:
-                    boxLabel = textBoxState.question;
-                    boxColor = boxQuestionColor;
-                    drawBorder = true;
                     break;
                 case BoxDisplayState.SHOWING_NOTHING:
                     boxLabel = "";
