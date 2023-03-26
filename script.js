@@ -16,6 +16,13 @@ const startX = 40;
 const startY = 100;
 const boxSpacing = 20;
 
+// Panel Metrics
+
+const panelWidth = 800;
+const panelHeight = 600;
+const panelX = 80;
+const panelY = 200;
+
 // Colors and Styles
 
 const backgroundColor = "MidnightBlue";
@@ -88,6 +95,40 @@ const BoxDisplayState = {
     SHOWING_QUESTION: 2,
     SHOWING_NOTHING: 3
 };
+
+const PanelDisplayState = {
+    SHOWING_NOTHING: 0,
+    SHOWING_ANSWER: 1,
+    SHOWING_QUESTION: 2
+}
+
+class PanelState {
+    constructor(panelDisplayState, answer, question) {
+        this.panelDisplayState = panelDisplayState;
+
+        this.answer = answer;
+        this.question = question;
+
+        this.x = 0;
+        this.y = 0;
+        this.width = 0;
+        this.height = 0;
+    }
+
+    onClick() {
+        switch (this.panelDisplayState) {
+            case PanelDisplayState.SHOWING_ANSWER:
+                this.panelDisplayState = PanelDisplayState.SHOWING_QUESTION;
+                break;
+            case PanelDisplayState.SHOWING_QUESTION:
+                this.panelDisplayState = PanelDisplayState.SHOWING_NOTHING;
+                break;
+            case PanelDisplayState.SHOWING_NOTHING:
+                this.panelDisplayState = PanelDisplayState.SHOWING_NOTHING;
+                break;
+        }
+    }
+}
 
 class TextBoxState {
     constructor(boxDisplayState, answerValue, answer, question) {
@@ -257,7 +298,7 @@ canvas.addEventListener('click', function(event) {
     if (boxClicked === null) {
         return;
     }
-    
+
     textBoxStates[boxClicked].onClick();
     console.log(`Box clicked: ${boxClicked}`);
   });  
@@ -268,7 +309,7 @@ function update(deltaTime) {
     // TODO: update game state
 }
 
-function render() {
+function drawCategories(ctx) {
     // draw a label for each category above the boxes
     for (let i = 0; i < categories.length; i++) {
         drawTextCentered(
@@ -280,7 +321,9 @@ function render() {
             headerTextStyle
         );
     }
+}
 
+function drawTextBoxes(ctx) {
     // draw a box for each category and answer value in columns and rows
     for (let i = 0; i < categories.length; i++) {
         for (let j = 0; j < answerValues.length; j++) {
@@ -333,7 +376,12 @@ function render() {
             textBoxState.width = boxWidth;
             textBoxState.height = boxHeight;
         }
-    }
+    }    
+}
+
+function render() {
+    drawCategories(ctx);
+    drawTextBoxes(ctx);
 }
 
 function animate(timestamp) {
