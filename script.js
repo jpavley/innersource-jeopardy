@@ -103,14 +103,14 @@ const PanelDisplayState = {
 }
 
 class PanelState {
-    constructor(panelDisplayState, answer, question) {
+    constructor(panelDisplayState) {
         this.panelDisplayState = panelDisplayState;
 
-        this.answer = answer;
-        this.question = question;
+        const gameWidth = startX + (boxWidth + boxSpacing) * (categories.length);
+        const gameHeight = startY + (boxSpacing * 4) + (boxHeight + boxSpacing) * (answerValues.length);
 
-        this.x = canvas.width / 2 - panelWidth / 2;
-        this.y = canvas.height / 2 - panelHeight / 2;
+        this.x = (gameWidth / 2) - (panelWidth / 2);
+        this.y = (gameHeight / 2) - (panelHeight / 2);
         this.width = panelWidth;
         this.height = panelHeight;
     }
@@ -148,6 +148,7 @@ class TextBoxState {
         switch (this.boxDisplayState) {
             case BoxDisplayState.SHOWING_VALUE:
                 this.boxDisplayState = BoxDisplayState.SHOWING_ANSWER;
+                panelState.panelDisplayState = PanelDisplayState.SHOWING_ANSWER;
                 break;
             case BoxDisplayState.SHOWING_ANSWER:
                 this.boxDisplayState = BoxDisplayState.SHOWING_QUESTION;
@@ -169,7 +170,7 @@ for (let i = 0; i < 15; i++) {
 }
 
 // create one PanelState
-const panelState = new PanelState(PanelDisplayState.SHOWING_NOTHING, "", "");
+const panelState = new PanelState(PanelDisplayState.SHOWING_NOTHING);
 
 // Drawing
 
@@ -271,6 +272,8 @@ function splitStringIntoLines(str, maxLineWidth) {
 
 // Interactivity
 
+let currentBoxClicked = null;
+
 function clickedInsideBox(x, y, boxX, boxY, boxWidth, boxHeight) {
     const gotClick =  x >= boxX && x <= boxX + boxWidth && y >= boxY && y <= boxY + boxHeight;
     return gotClick;
@@ -302,6 +305,7 @@ canvas.addEventListener('click', function(event) {
         return;
     }
 
+    currentBoxClicked = boxClicked;
     textBoxStates[boxClicked].onClick();
     console.log(`Box clicked: ${boxClicked}`);
   });  
@@ -385,24 +389,41 @@ function drawTextBoxes(ctx) {
 function drawPanel(ctx) {
     // draw panel if there is something to show
 
+    let label = "";
+    let color = "RoyalBlue";
+    let drawBorder = true;
 
+    switch (panelState.panelDisplayState) {
+        case PanelDisplayState.SHOWING_NOTHING:
+            return;
+        case PanelDisplayState.SHOWING_ANSWER:
+            label = textBoxStates[currentBoxClicked].answer;
+            color = "rgba(0, 0, 255, 0.80)";
+            break;
+        case PanelDisplayState.SHOWING_QUESTION:
+            label = textBoxStates[currentBoxClicked].question;
+            color = boxQuestionColor;
+            break;
+    }
 
-    var label = "";
-    var color = "RoyalBlue";
-    var drawBorder = true;
-
+    ctx.shadowBlur = 10;
+    //ctx.shadowColor = "black";
 
     drawTextBox(
         ctx, 
-        panelX, 
-        panelY, 
-        panelWidth, 
-        panelHeight, 
+        panelState.x, 
+        panelState.y, 
+        panelState.width, 
+        panelState.height, 
         10,  
         label,
         color,
         drawBorder
     );
+
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "transparent";
+
 }
 
 function render() {
