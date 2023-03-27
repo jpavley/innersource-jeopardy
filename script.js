@@ -11,14 +11,11 @@ const viewPortHeight = getViewportSize().height;
 
 // Screen Metrics
 
-const gameWidth = 1920;
-const gameHeight = 1080;
-const gameSizeRatio =  gameHeight / gameWidth;
+const gameWidth = 1020;
+const gameHeight = 880;
 
-console.log(`Game Size Ratio: ${gameSizeRatio}`);
-
-canvas.width = viewPortWidth;
-canvas.height = viewPortWidth * gameSizeRatio;
+canvas.width = gameWidth;
+canvas.height = gameHeight;
 
 // Interaction
 
@@ -35,7 +32,7 @@ let currentBoxClicked = null;
 const boxWidth = 300;
 const boxHeight = 130;
 const startX = 40;
-const startY = 100;
+const startY = 120;
 const boxSpacing = 20;
 
 // Panel Metrics
