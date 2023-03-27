@@ -3,13 +3,22 @@
 // Canvas and context
 
 const canvas = document.getElementById("canvas");
-canvas.width = 1920;
-canvas.height = 1080;
 
 const ctx = canvas.getContext("2d");
 
 const viewPortWidth = getViewportSize().width;
 const viewPortHeight = getViewportSize().height;
+
+// Screen Metrics
+
+const gameWidth = 1920;
+const gameHeight = 1080;
+const gameSizeRatio =  gameHeight / gameWidth;
+
+console.log(`Game Size Ratio: ${gameSizeRatio}`);
+
+canvas.width = viewPortWidth;
+canvas.height = viewPortWidth * gameSizeRatio;
 
 // Interaction
 
@@ -448,7 +457,9 @@ function animate(timestamp) {
     lastTime = timestamp;
 
     // clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = backgroundColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // update and render
     update(deltaTime);
