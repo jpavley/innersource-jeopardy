@@ -8,6 +8,9 @@ canvas.height = 1080;
 
 const ctx = canvas.getContext("2d");
 
+const viewPortWidth = getViewportSize().width;
+const viewPortHeight = getViewportSize().height;
+
 // Interaction
 
 const ClickOwner = {
@@ -178,6 +181,13 @@ for (let i = 0; i < 15; i++) {
 const panelState = new PanelState(PanelDisplayState.SHOWING_NOTHING);
 
 // Drawing
+
+function getViewportSize() {
+    return {
+        width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+        height: Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+    }
+}
 
 function drawRoundedRect(ctx, x, y, width, height, radius, color, drawBorder) {
     ctx.beginPath();
@@ -397,11 +407,11 @@ function drawPanel(ctx) {
             return;
         case PanelDisplayState.SHOWING_ANSWER:
             label = textBoxStates[currentBoxClicked].answer;
-            color = "rgba(0, 0, 255, 0.50)";
+            color = "rgba(0, 0, 255, 0.80)";
             break;
         case PanelDisplayState.SHOWING_QUESTION:
             label = textBoxStates[currentBoxClicked].question;
-            color = "rgba(0, 0, 255, 0.50)";
+            color = "rgba(0, 0, 255, 0.80)";
             break;
     }
 
