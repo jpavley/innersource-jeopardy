@@ -9,14 +9,6 @@ const ctx = canvas.getContext("2d");
 const viewPortWidth = getViewportSize().width;
 const viewPortHeight = getViewportSize().height;
 
-// Screen Metrics
-
-const gameWidth = 1020;
-const gameHeight = 880;
-
-canvas.width = gameWidth;
-canvas.height = gameHeight;
-
 // Interaction
 
 const ClickOwner = {
@@ -27,20 +19,78 @@ const ClickOwner = {
 let currentClickOwner = ClickOwner.TEXT_BOX;
 let currentBoxClicked = null;
 
+// Screen Metrics
+
+let gameWidth = 1020;
+let gameHeight = 880;
+
 // Box Metrics
 
-const boxWidth = 300;
-const boxHeight = 130;
-const startX = 40;
-const startY = 120;
-const boxSpacing = 20;
+let boxWidth = 300;
+let boxHeight = 130;
+let startX = 40;
+let startY = 120;
+let boxSpacing = 20;
 
 // Panel Metrics
 
-const panelWidth = 800;
-const panelHeight = 600;
-const panelX = 80;
-const panelY = 200;
+let panelWidth = 800;
+let panelHeight = 600;
+let panelX = 80;
+let panelY = 200;
+
+// Font Metrics
+
+let singleLineFontSize = 50;
+let multiLineFontSize = 70;
+let headerFontSize = 30;
+
+// Configure Game Metrics
+
+const hardMetrics = {
+    gameWidth: 1020,
+    gameHeight: 880,
+    boxWidth: 300,
+    boxHeight: 130,
+    startX: 40,
+    startY: 120,
+    boxSpacing: 20,
+    panelWidth: 800,
+    panelHeight: 600,
+    panelX: 80,
+    panelY: 200,
+    singleLineFontSize: 50,
+    multiLineFontSize: 70,
+    headerFontSize: 30
+};
+
+function updateMetricsBasedOnScreenSize() {
+    const canvasAspectRatio =  hardMetrics.gameHeight / hardMetrics.gameWidth;
+    const viewPortAspectRatio = (viewPortWidth / viewPortHeight) / canvasAspectRatio;
+    gameWidth = viewPortWidth;
+    gameHeight = viewPortWidth * canvasAspectRatio;
+
+    boxWidth = hardMetrics.boxWidth * viewPortAspectRatio;
+    boxHeight = hardMetrics.boxHeight * viewPortAspectRatio;
+
+    startX = hardMetrics.startX * viewPortAspectRatio;
+    startY = hardMetrics.startY * viewPortAspectRatio;
+    boxSpacing = hardMetrics.boxSpacing * viewPortAspectRatio;
+    panelWidth = hardMetrics.panelWidth * viewPortAspectRatio;
+    panelHeight = hardMetrics.panelHeight * viewPortAspectRatio;
+    panelX = hardMetrics.panelX * viewPortAspectRatio;
+    panelY = hardMetrics.panelY * viewPortAspectRatio;
+    singleLineFontSize = hardMetrics.singleLineFontSize * viewPortAspectRatio;
+    multiLineFontSize = hardMetrics.multiLineFontSize * viewPortAspectRatio;
+    headerFontSize = hardMetrics.headerFontSize * viewPortAspectRatio;  
+}
+        
+
+function configureScreen() {
+    //updateMetricsBasedOnScreenSize();
+    canvas.width = gameWidth;
+    canvas.height = gameHeight;    
+}
 
 // Colors and Styles
 
@@ -54,9 +104,6 @@ const boxQuestionColor = "DodgerBlue";
 const headerColor = "Gold";
 
 const textFontName = "Trebuchet MS";
-const singleLineFontSize = 50;
-const multiLineFontSize = 70;
-const headerFontSize = 30;
 
 const headerTextStyle = `${headerFontSize}px ${textFontName}`;
 const singleLineTextStyle = `${singleLineFontSize}px ${textFontName}`;
@@ -466,9 +513,11 @@ function animate(timestamp) {
     requestAnimationFrame(animate);
 }
 
+
 // start game
 
 let lastTime = 0;
+configureScreen();
 animate(0);
 
 
